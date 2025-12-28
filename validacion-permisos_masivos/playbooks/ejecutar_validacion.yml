@@ -1,0 +1,11 @@
+---
+- name: Automatización de Validación de Red
+  hosts: localhost
+  gather_facts: true
+  
+  tasks:
+    - name: Iniciar rol de Reporte y Validación
+      ansible.builtin.include_role:
+        name: reporte
+      vars:
+        titulo_reporte: "Reporte Técnico: Validacion de permisos"

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Técnico: Autorremediación de Filesystem y Red</title>
+    <style>
+        /* Tipografía y Reset */
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        
+        /* Encabezado */
+        .header {
+            background-color: #DA291C;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+        
+        /* Barra de info meta */
+        .meta-bar {
+            background-color: #e8e8e8;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Contenedor Principal */
+        .content {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+        }
+
+        /* Tabla */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        thead { background-color: #2c3e50; color: white; }
+        th { padding: 12px; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        tr:hover { background-color: #f9f9f9; }
+
+        /* Píldoras de Estado (Pills) */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-align: center;
+            display: inline-block;
+            min-width: 80px;
+        }
+        .bg-success { background-color: #28a745; } /* Verde Éxito */
+        .bg-danger { background-color: #DA291C; }  /* Rojo Fallo */
+
+        .footer { margin-top: 20px; text-align: center; font-size: 0.8rem; color: #999; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Reporte Técnico: Autorremediación de Filesystem y Red</h1>
+    </div>
+
+    <div class="meta-bar">
+        <strong>Fecha Ejecución:</strong> 2025-12-28 09:34:36 &nbsp;|&nbsp;
+        <strong>Ambiente:</strong> Producción
+    </div>
+
+    <div class="content">
+        <h2 style="color: #2c3e50; border-bottom: 2px solid #DA291C; display: inline-block; padding-bottom: 5px;">Detalle de Ejecución por Servidor</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Servidor Origen</th>
+                    <th>Destino Analizado</th>
+                    <th>Uso Actual (Puerto)</th>
+                    <th>Mensaje Sistema</th>
+                    <th>Estado / Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                                <tr>
+                    <td><strong>192.168.1.10</strong></td>
+                    <td>192.168.1.12</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.10</strong></td>
+                    <td>192.168.1.12</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.12</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.10</strong></td>
+                    <td>192.168.1.14</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.10</strong></td>
+                    <td>192.168.1.14</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.14</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.14</strong></td>
+                    <td>192.168.1.10</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.14</strong></td>
+                    <td>192.168.1.10</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.10</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.14</strong></td>
+                    <td>192.168.1.12</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.14</strong></td>
+                    <td>192.168.1.12</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.12</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.12</strong></td>
+                    <td>192.168.1.10</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.12</strong></td>
+                    <td>192.168.1.10</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.10</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.12</strong></td>
+                    <td>192.168.1.14</td>
+                    <td style="color: #666;">22</td>
+                    <td>Conexión Exitosa</td>
+                    <td>
+                        <span class="badge bg-success">SALUDABLE</span>
+                    </td>
+                </tr>
+                                <tr>
+                    <td><strong>192.168.1.12</strong></td>
+                    <td>192.168.1.14</td>
+                    <td style="color: #666;">443</td>
+                    <td>Timeout conectando a 192.168.1.14</td>
+                    <td>
+                        <span class="badge bg-danger">FALLIDO</span>
+                    </td>
+                </tr>
+                            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Generado automáticamente por Ansible Automation.
+    </div>
+
+</body>
+</html>

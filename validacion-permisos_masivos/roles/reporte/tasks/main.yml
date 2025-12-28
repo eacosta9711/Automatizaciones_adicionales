@@ -1,0 +1,82 @@
+---
+- name: Leer reglas desde la carpeta files del rol
+  community.general.read_csv:
+    path: "{{ role_path }}/files/reglas_firewall.csv"
+  register: csv_data
+  delegate_to: localhost
+
+# FASE 1: Disparo Asincronico
+
+- name: Validar conectividad TCP (Modo Asincrono)
+  ansible.builtin.wait_for:
+    host: "{{ item.ip_destino }}"
+    port: "{{ item.puerto }}"
+    state: started
+    timeout: 3             # 3 segundos máximo por prueba
+    msg: "Timeout conectando a {{ item.ip_destino }}"
+  delegate_to: "{{ item.ip_origen }}" # La prueba sale DESDE este servidor
+  loop: "{{ csv_data.list }}"
+  async: 45                # Tiempo máximo para toda la operación
+  poll: 0                  # Modo asíncrono puro
+  register: job_ids
+  # ignore_errors: true      # Vital para continuar aunque una falle
+  changed_when: false
+
+# FASE 2: Recolección de Resultados
+
+- name: Esperar resultados de las validaciones
+  ansible.builtin.async_status:
+    jid: "{{ item.ansible_job_id }}"
+  delegate_to: "{{ item.item.ip_origen }}"
+  loop: "{{ job_ids.results }}"
+  register: resultados_async
+  until: results.finished
+  retries: 30
+  delay: 1
+  ignore_errors: true    # Importante para que no pare si uno falla
+  loop_control:
+    loop_var: item       # Iteramos sobre los IDs generados arriba
+    label: "Validando {{ item.item.ip_origen }} -> {{ item.item.ip_destino }}"
+  vars:
+    results: "{{ resultados_async }}" # Alias para la condición until
+
+# FASE 3: Procesamiento y Reporte
+
+- name: Procesar datos para el reporte
+  ansible.builtin.set_fact:
+    datos_consolidados: "{{ datos_consolidados | default([]) + [ info_item ] }}"
+  vars:
+    # Lógica condicional limpia para determinar estado
+    is_ok: "{{ item.finished == 1 and item.failed is defined and item.failed == false }}"
+    estado_final: "{{ 'SALUDABLE' if item.state is defined and item.state == 'started' else 'FALLIDO' }}"
+    clase_css: "{{ 'bg-success' if item.state is defined and item.state == 'started' else 'bg-danger' }}"
+
+    origen_real: "{{ item.item.item.ip_origen }}"
+    destino_real: "{{ item.item.item.ip_destino }}"
+    puerto_real: "{{ item.item.item.puerto }}"
+
+    info_item:
+      origen: "{{ origen_real }}"
+      destino: "{{ destino_real }}"
+      puerto: "{{ puerto_real }}"
+      estado: "{{ estado_final }}"
+      css_class: "{{ clase_css }}"
+
+      mensaje: "{{ 'Conexión Exitosa' if is_ok else (item.msg | default('Error de conexión')) }}"
+
+  loop: "{{ resultados_async.results }}"
+  loop_control:
+    label: "{{ item.item.item.ip_origen }} -> {{ item.item.item.ip_destino }}"
+
+- name: Crear carpeta de salida
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/../reportes_html" # Guarda fuera de los roles para orden
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+
+- name: Generar HTML Final
+  ansible.builtin.template:
+    src: "reporte_davivienda.html.j2"
+    dest: "{{ playbook_dir }}/../reportes_html/reporte_red_{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}.html"
+  delegate_to: localhost
